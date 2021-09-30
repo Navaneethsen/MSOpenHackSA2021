@@ -1,0 +1,21 @@
+# read/write access to api ns
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-rw
+  namespace: api
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+# read access to web ns
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: web-r
+  namespace: web
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]

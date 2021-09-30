@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+  namespace: api
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registrysiq8419.azurecr.io/tripinsights/trips:1.0
+        env:
+        - name: OPENAPI_DOCS_URI
+          value: "http://trips.api/api/docs/trips"
+        volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/secrets"
+          readOnly: true
+        # resources:
+        #   limits:
+        #     memory: 256Mi
+        #     cpu: 200m
+        ports:
+        - containerPort: 80
+          name: trips
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "openhack-key-vault"

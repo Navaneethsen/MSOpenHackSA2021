@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+  namespace: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registrysiq8419.azurecr.io/tripinsights/trips:1.0
+        env:
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: username
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: password
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: servername
+        - name: SQL_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: sql-secret
+              key: databasename
+        - name: OPENAPI_DOCS_URI
+          value: "http://changeme"
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 200m
+        ports:
+        - containerPort: 80
+          name: trips

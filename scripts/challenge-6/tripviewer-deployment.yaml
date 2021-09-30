@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer
+  namespace: web
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+      containers:
+      - name: tripviewer
+        image: registrysiq8419.azurecr.io/tripinsights/tripviewer:1.0
+        env:
+        - name: TRIPS_API_ENDPOINT
+          value: "http://trips-svc.api"
+        - name: USERPROFILE_API_ENDPOINT
+          value: "http://userprofile-svc.api"
+        # resources:
+        #   limits:
+        #     memory: 256Mi
+        #     cpu: 200m
+        ports:
+        - containerPort: 80
+          name: tripviewer
